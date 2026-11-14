@@ -1,98 +1,99 @@
 # test-gen-agent
 
-Two agents that use Claude to generate Jest tests for a sample TypeScript project:
+One test-generation agent, built three ways.
 
-| Agent | Folder | Stack |
-|---|---|---|
-| Python | `agent/` | LangGraph + langchain-anthropic |
-| C# | `semantic-kernel-agent/` | Semantic Kernel + Anthropic C# SDK |
+## What it does
 
-Both agents read `sample-ts/src/cart.ts`, write `sample-ts/src/cart.test.ts`, run the tests and fix
-failing tests, with at most 3 test runs. If a test fails because the source code looks wrong, they do
-not change the expected value to match the bug. They keep the test and mark it with a
-`// POSSIBLE BUG:` comment.
+The agent reads `sample-ts/src/cart.ts`, asks Claude to write Jest tests for it, writes them to
+`sample-ts/src/cart.test.ts`, and runs them. If tests fail, it fixes the tests and runs them again,
+at most 3 times in total.
 
-## Layout
+If a test fails because `cart.ts` itself looks wrong, the agent is told not to change the expected
+value to match the bug. It keeps the test and marks it with a `// POSSIBLE BUG:` comment.
 
-```
-test-gen-agent/
-├── agent/                       # Python agent (LangGraph)
-│   ├── graph.py                 # the agent: read → generate → write → run → fix loop
-│   └── main.py                  # setup check; prints "ready" if ANTHROPIC_API_KEY is set
-├── semantic-kernel-agent/       # C# agent (Semantic Kernel)
-│   ├── Program.cs               # connects Semantic Kernel to Claude, runs the prompt
-│   ├── TestTools.cs             # plugin with the tools Claude can call
-│   └── semantic-kernel-agent.csproj
-├── sample-ts/                   # TypeScript code the agents write tests for
-│   ├── src/cart.ts              # pure cart functions (add/remove item, totals, discounts)
-│   ├── src/cart.test.ts         # generated tests
-│   ├── jest.config.js           # Jest + ts-jest
-│   ├── tsconfig.json
-│   └── package.json
-├── .github/workflows/
-│   ├── test-agent.yml           # CI for the Python agent
-│   └── sk-test-agent.yml        # CI for the Semantic Kernel agent
-├── requirements.txt             # Python dependencies
-└── .env.example                 # copy to .env and add your key
-```
+## The three versions
 
-## Setup
+**`agent/`: Python, LangGraph.** The code decides the flow. A fixed graph runs
+read → generate → write → run, and a conditional edge (`after_tests` in `graph.py`) either ends
+the run or sends it to `fix_tests` and back to write → run. The edge stops after `MAX_RUNS = 3`.
+
+**`semantic-kernel-agent/`: C#, Semantic Kernel.** The model decides the steps. Claude gets three
+tools (`read_source`, `write_tests`, `run_tests`) through automatic function calling and chooses
+when to call them. The guardrails live in `TestTools.cs`.
+
+**`agent-framework-agent/`: C#, Microsoft Agent Framework 1.x.** Microsoft Agent Framework is the
+successor to Semantic Kernel. This version has the same three tools and guardrails, registered as
+Microsoft.Extensions.AI functions with `AIFunctionFactory`. The agent is created with `AsAIAgent`
+and run with `RunAsync`. Tool calling is on by default, so there's no extra setup step.
+
+## Comparison
+
+| | `agent/` | `semantic-kernel-agent/` | `agent-framework-agent/` |
+|---|---|---|---|
+| Who decides the steps | Code (graph edges) | Claude (automatic function calling) | Claude (default tool calling) |
+| Retry cap (3 runs) | Conditional edge, `MAX_RUNS` in `graph.py` | `run_tests` in `TestTools.cs` | `run_tests` in `TestTools.cs` |
+| Bug guardrail (`// POSSIBLE BUG:`) | `fix_tests` prompt in `graph.py` | Prompt in `Program.cs` | Agent instructions in `Program.cs` |
+| Language | Python 3.12 | C# (.NET 10) | C# (.NET 10) |
+| Framework | LangGraph + langchain-anthropic | Semantic Kernel | Microsoft Agent Framework (`Microsoft.Agents.AI`) |
+
+## Guardrails
+
+- **Writes are limited to test files in `sample-ts/src`.**
+  - In the C# versions, `write_tests` refuses any name not ending in `.test.ts`, and a path check
+    rejects anything outside `sample-ts/src`.
+  - In the Python version, the code builds the test file path itself, so the model never chooses one.
+- **3-run cap, enforced in code.** After 3 runs, the Python graph ends and the C# `run_tests` tool
+  answers `LIMIT REACHED`.
+- **The bug rule is a prompt instruction.** The `// POSSIBLE BUG:` behavior comes from what Claude
+  is told, not from a code check.
+- **The API key is kept out of the code.** Locally it is read from `.env`, which git ignores. In CI
+  it comes from the `ANTHROPIC_API_KEY` repository secret.
+
+## CI
+
+Each agent has its own GitHub Actions workflow. It runs on pull requests that touch that agent's
+folder or `sample-ts/src/`, and posts the agent's output as a PR comment.
+
+| Workflow | Agent |
+|---|---|
+| `.github/workflows/test-agent.yml` | `agent/` |
+| `.github/workflows/sk-test-agent.yml` | `semantic-kernel-agent/` |
+| `.github/workflows/af-test-agent.yml` | `agent-framework-agent/` |
+
+## Running locally
+
+**Prerequisites**
+
+- Python 3.12, .NET 10 SDK, Node 20
+- An Anthropic API key in `.env`:
 
 ```sh
-cp .env.example .env   # then set ANTHROPIC_API_KEY
-
-# TypeScript project (needed by both agents)
-cd sample-ts
-npm install
-npm test
+cp .env.example .env      # then set ANTHROPIC_API_KEY
+cd sample-ts && npm install
 ```
 
-Note: `sample-ts` pins TypeScript to 6.x because ts-jest does not yet support TypeScript 7.
+Every agent overwrites `sample-ts/src/cart.test.ts`.
 
-## Python agent (LangGraph)
-
-Requires Python 3.12.
+**Python agent.** Run from the repo root:
 
 ```sh
 python3.12 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python agent/main.py      # prints "ready" if the key is set
-.venv/bin/python -m agent.graph     # run the agent
+.venv/bin/python -m agent.graph
 ```
 
-The agent is a LangGraph state graph with nodes for reading the source, generating tests, writing
-them, running Jest and fixing failures. It stops when the tests pass or after 3 runs.
-
-## Semantic Kernel agent (C#)
-
-Requires the .NET 10 SDK and `npm install` in `sample-ts/`.
+**Semantic Kernel agent.** Run from `semantic-kernel-agent/`:
 
 ```sh
 cd semantic-kernel-agent
 dotnet run
 ```
 
-Run it from inside `semantic-kernel-agent/`: it reads `ANTHROPIC_API_KEY` from `../.env` (or the
-environment) and works on `../sample-ts`.
+**Agent Framework agent.** Run from `agent-framework-agent/`:
 
-Unlike the Python agent's fixed graph, this agent uses **automatic function calling**. Claude
-decides which tools to call and in what order. The tools come from `TestTools.cs`, registered as a
-Semantic Kernel plugin:
+```sh
+cd agent-framework-agent
+dotnet run
+```
 
-| Tool | What it does | Guardrail |
-|---|---|---|
-| `read_source` | Reads a file from `sample-ts/src` | Paths outside `sample-ts/src` are rejected |
-| `write_tests` | Writes a test file to `sample-ts/src` | Only `*.test.ts` files |
-| `run_tests` | Runs `npm test` and returns PASSED/FAILED plus output | Refuses after 3 runs |
-
-At the end it prints whether the last run passed, how many runs it took, and Claude's summary.
-
-## CI
-
-Both workflows run on pull requests and post the agent's output as a PR comment. They need an
-`ANTHROPIC_API_KEY` repository secret.
-
-| Workflow | Runs when a PR changes |
-|---|---|
-| `test-agent.yml` (Python) | `agent/**` or `sample-ts/src/**` |
-| `sk-test-agent.yml` (Semantic Kernel) | `semantic-kernel-agent/**` or `sample-ts/src/**` |
+The C# agents read `../.env` and work on `../sample-ts`, so run them from inside their own folder.
