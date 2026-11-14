@@ -1,0 +1,47 @@
+name: AI test generation (Agent Framework)
+
+on:
+  pull_request:
+    paths:
+      - "agent-framework-agent/**"
+      - "sample-ts/src/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  af-generate-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install test project dependencies
+        run: cd sample-ts && npm install
+
+      - name: Run Agent Framework agent
+        working-directory: agent-framework-agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: dotnet run | tee ../af-agent-output.txt
+
+      - name: Comment on the pull request
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### Agent Framework test generation result"
+            echo '```'
+            tail -n 40 af-agent-output.txt
+            echo '```'
+          } > af-comment.md
+          gh pr comment ${{ github.event.pull_request.number }} --body-file af-comment.md
