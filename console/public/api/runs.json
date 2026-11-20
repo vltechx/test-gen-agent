@@ -1,0 +1,2443 @@
+{
+  "runs": [
+    {
+      "id": "run-1010",
+      "agent": "langgraph",
+      "trigger": "local",
+      "pullRequest": null,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-19T02:40:00Z",
+      "durationMs": 32898,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 5,
+          "durationMs": 3164,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "keeps the existing item name and price when merging",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "removeItem",
+              "test": "removes the item with the given id",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "addItem",
+              "test": "does not mutate the original cart or its items",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "removeItem",
+              "test": "is a no-op for an id that is not in the cart",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -1",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 4821,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1009",
+      "agent": "agent-framework",
+      "trigger": "local",
+      "pullRequest": null,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-18T06:09:00Z",
+      "durationMs": 32291,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 5,
+          "durationMs": 6392,
+          "failures": [
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -Infinity",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "returns 0 for a 100% discount",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "subtotal",
+              "test": "handles zero-priced items",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity 1.5",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount NaN",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 4114,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1008",
+      "agent": "semantic-kernel",
+      "trigger": "ci",
+      "pullRequest": 11,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-17T17:17:00Z",
+      "durationMs": 47994,
+      "status": "limit_reached",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 3,
+          "durationMs": 5393,
+          "failures": [
+            {
+              "suite": "computeTotal",
+              "test": "rounds half up to the nearest cent",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "includes the offending value in the error message",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "subtotal",
+              "test": "returns 0 for an empty cart",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 2,
+          "durationMs": 3221,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity NaN",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "addItem",
+              "test": "returns copies of items rather than shared references",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 2,
+          "durationMs": 5904,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "adds a new item to an empty cart",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount 101",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "failed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "failed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1007",
+      "agent": "langgraph",
+      "trigger": "ci",
+      "pullRequest": 10,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-16T20:10:00Z",
+      "durationMs": 45661,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 4339,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1006",
+      "agent": "agent-framework",
+      "trigger": "ci",
+      "pullRequest": 9,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-16T06:25:00Z",
+      "durationMs": 53794,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 6255,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1005",
+      "agent": "semantic-kernel",
+      "trigger": "local",
+      "pullRequest": null,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-15T13:04:00Z",
+      "durationMs": 45456,
+      "status": "limit_reached",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 2,
+          "durationMs": 5355,
+          "failures": [
+            {
+              "suite": "subtotal",
+              "test": "returns 0 for an empty cart",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount 100.01",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 3,
+          "durationMs": 6133,
+          "failures": [
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -1",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "subtotal",
+              "test": "computes unitPrice * quantity for a single item",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "returns the full subtotal for a 0% discount",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 4,
+          "durationMs": 2741,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity Infinity",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity -1",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount 101",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "rounds half up to the nearest cent",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "failed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "failed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "failed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "failed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [
+        {
+          "suite": "computeTotal",
+          "test": "rounds half up to the nearest cent",
+          "note": "POSSIBLE BUG: computeTotal uses Math.floor, so 0.5 cents rounds down instead of up."
+        }
+      ],
+      "sample": true
+    },
+    {
+      "id": "run-1004",
+      "agent": "langgraph",
+      "trigger": "local",
+      "pullRequest": null,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-14T21:13:00Z",
+      "durationMs": 64561,
+      "status": "limit_reached",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 5,
+          "durationMs": 3727,
+          "failures": [
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -Infinity",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "rounds half up to the nearest cent",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "subtotal",
+              "test": "handles zero-priced items",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -0.01",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "returns 0 for a 100% discount",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 4,
+          "durationMs": 2983,
+          "failures": [
+            {
+              "suite": "computeTotal",
+              "test": "returns the subtotal when no discount is given",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -1",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "subtotal",
+              "test": "computes unitPrice * quantity for a single item",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "addItem",
+              "test": "does not mutate the original cart or its items",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 5,
+          "durationMs": 4847,
+          "failures": [
+            {
+              "suite": "computeTotal",
+              "test": "rounds down to the nearest cent",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "addItem",
+              "test": "increases quantity when the id already exists, without duplicating",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "addItem",
+              "test": "does not mutate the original cart or its items",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "includes the offending value in the error message",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "rounds half up to the nearest cent",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "failed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "failed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "failed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "failed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "failed"
+        }
+      ],
+      "possibleBugs": [
+        {
+          "suite": "computeTotal",
+          "test": "rounds half up to the nearest cent",
+          "note": "POSSIBLE BUG: computeTotal uses Math.floor, so 0.5 cents rounds down instead of up."
+        }
+      ],
+      "sample": true
+    },
+    {
+      "id": "run-1003",
+      "agent": "agent-framework",
+      "trigger": "ci",
+      "pullRequest": 6,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-14T00:52:00Z",
+      "durationMs": 30432,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 6,
+          "durationMs": 2690,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity -1",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "removeItem",
+              "test": "returns an empty array when removing from an empty cart",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            },
+            {
+              "suite": "addItem",
+              "test": "keeps the existing item name and price when merging",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "returns 0 for an empty cart regardless of discount",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount Infinity",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "includes the offending value in the error message",
+              "message": "TypeError: Cannot read properties of undefined (reading 'quantity')"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 2,
+          "durationMs": 4025,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity 0",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "removeItem",
+              "test": "removes the item with the given id",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 4811,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1002",
+      "agent": "semantic-kernel",
+      "trigger": "ci",
+      "pullRequest": 5,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-13T08:05:00Z",
+      "durationMs": 47578,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 4757,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    },
+    {
+      "id": "run-1001",
+      "agent": "langgraph",
+      "trigger": "ci",
+      "pullRequest": 4,
+      "model": "claude-sonnet-5-5",
+      "sourceFile": "sample-ts/src/cart.ts",
+      "testFile": "sample-ts/src/cart.test.ts",
+      "startedAt": "2026-11-12T16:09:00Z",
+      "durationMs": 28677,
+      "status": "passed",
+      "attempts": [
+        {
+          "number": 1,
+          "passed": false,
+          "testsTotal": 36,
+          "testsFailed": 5,
+          "durationMs": 4887,
+          "failures": [
+            {
+              "suite": "addItem",
+              "test": "keeps the existing item name and price when merging",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "addItem",
+              "test": "does not mutate the original cart or its items",
+              "message": "expect(received).toThrow(expected) - Received function did not throw"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "throws RangeError for invalid discount -Infinity",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "addItem",
+              "test": "throws RangeError for invalid quantity 0",
+              "message": "expect(received).toEqual(expected) // deep equality"
+            },
+            {
+              "suite": "computeTotal",
+              "test": "returns 0 for a 100% discount",
+              "message": "expect(received).toBe(expected) // Object.is equality"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "passed": true,
+          "testsTotal": 36,
+          "testsFailed": 0,
+          "durationMs": 4212,
+          "failures": []
+        }
+      ],
+      "tests": [
+        {
+          "suite": "addItem",
+          "name": "adds a new item to an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "appends a new item with a different id",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "increases quantity when the id already exists, without duplicating",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "keeps the existing item name and price when merging",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "does not mutate the original cart or its items",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "returns copies of items rather than shared references",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 0",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity -1",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity 1.5",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws RangeError for invalid quantity Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "addItem",
+          "name": "throws for invalid quantity even when the item already exists",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "removes the item with the given id",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "is a no-op for an id that is not in the cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "returns an empty array when removing from an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "can empty the cart by removing the last item",
+          "status": "passed"
+        },
+        {
+          "suite": "removeItem",
+          "name": "does not mutate the original cart and returns copied items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "returns 0 for an empty cart",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "computes unitPrice * quantity for a single item",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "sums across multiple items",
+          "status": "passed"
+        },
+        {
+          "suite": "subtotal",
+          "name": "handles zero-priced items",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the subtotal when no discount is given",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "applies a percentage discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for a 100% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns the full subtotal for a 0% discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "returns 0 for an empty cart regardless of discount",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds down to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "rounds half up to the nearest cent",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -1",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -0.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 100.01",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount 101",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount NaN",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "throws RangeError for invalid discount -Infinity",
+          "status": "passed"
+        },
+        {
+          "suite": "computeTotal",
+          "name": "includes the offending value in the error message",
+          "status": "passed"
+        }
+      ],
+      "possibleBugs": [],
+      "sample": true
+    }
+  ]
+}
