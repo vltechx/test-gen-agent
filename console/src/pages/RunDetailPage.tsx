@@ -41,7 +41,7 @@ export function RunDetailPage() {
   return (
     <>
       <PageHeader title={run.runId} crumbs={crumbs} />
-      <div className={styles.meta}>
+      <div className={styles.meta}> 
         <StatusChip outcome={run.outcome} />
         <span>
           Agent <b>{AGENTS[run.agent].name}</b>
@@ -57,6 +57,9 @@ export function RunDetailPage() {
         </span>
         <span>
           Started <b>{formatDate(run.startedAt)}</b>
+        </span>
+        <span>
+          Finished {formatDate(run.finishedAt)}
         </span>
         <span>
           Test file <b>{run.final.testLines} lines</b>
