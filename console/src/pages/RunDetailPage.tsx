@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
 import { AGENTS } from '../api/agents';
-import { formatDate, formatDuration, passedCount } from '../api/format';
+import { formatDate, formatDuration, formatTrigger, passedCount, splitTestName } from '../api/format';
 import { useRun } from '../api/runs';
 import { PageHeader } from '../components/PageHeader';
 import { Stat } from '../components/Stat';
@@ -35,18 +35,22 @@ export function RunDetailPage() {
     );
   }
 
-  const tests = failedOnly ? run.tests.filter((t) => t.status === 'failed') : run.tests;
+  const tests = failedOnly ? run.finalTests.filter((t) => t.status === 'failed') : run.finalTests;
+  const testFileName = run.testFile.split('/').pop();
 
   return (
     <>
-      <PageHeader title={run.id} crumbs={crumbs} />
+      <PageHeader title={run.runId} crumbs={crumbs} />
       <div className={styles.meta}>
-        <StatusChip status={run.status} />
+        <StatusChip outcome={run.outcome} />
         <span>
           Agent <b>{AGENTS[run.agent].name}</b>
         </span>
         <span>
-          Trigger <b>{run.trigger === 'ci' ? `CI, PR #${run.pullRequest}` : 'Local'}</b>
+          Trigger <b>{formatTrigger(run.trigger)}</b>
+        </span>
+        <span>
+          Commit <b className={ui.mono}>{run.trigger.commit}</b>
         </span>
         <span>
           Model <b>{run.model}</b>
@@ -54,23 +58,27 @@ export function RunDetailPage() {
         <span>
           Started <b>{formatDate(run.startedAt)}</b>
         </span>
+        <span>
+          Test file <b>{run.final.testLines} lines</b>
+        </span>
       </div>
 
       <div className={ui.statGrid}>
-        <Stat label="Tests passed" value={`${passedCount(run.tests)} / ${run.tests.length}`} />
-        <Stat label="Attempts" value={`${run.attempts.length} / 3`} />
-        <Stat label="Possible bugs" value={String(run.possibleBugs.length)} />
+        <Stat label="Tests passed" value={`${passedCount(run.finalTests)} / ${run.final.testCount}`} />
+        <Stat label="Attempts" value={`${run.attempts.length} / ${run.maxRuns}`} />
+        <Stat label="Possible bugs" value={String(run.suspectedBugs.length)} />
         <Stat label="Duration" value={formatDuration(run.durationMs)} />
       </div>
 
-      {run.possibleBugs.length > 0 && (
+      {run.suspectedBugs.length > 0 && (
         <>
           <h2 className={ui.sectionTitle}>Possible bugs in the source</h2>
-          {run.possibleBugs.map((b) => (
-            <div key={b.suite + b.test} className={`${ui.card} ${styles.bug}`}>
-              <div className={styles.suite}>{b.suite}</div>
-              <strong>{b.test}</strong>
-              <p>{b.note}</p>
+          {run.suspectedBugs.map((b) => (
+            <div key={b.line} className={`${ui.card} ${styles.bug}`}>
+              <div className={styles.suite}>
+                {testFileName}, line {b.line}
+              </div>
+              <code>{b.text}</code>
             </div>
           ))}
         </>
@@ -79,23 +87,23 @@ export function RunDetailPage() {
       <h2 className={ui.sectionTitle}>Attempts</h2>
       <ol className={styles.timeline}>
         {run.attempts.map((a) => (
-          <li key={a.number} className={`${ui.card} ${styles.attempt}`}>
+          <li key={a.n} className={`${ui.card} ${styles.attempt}`}>
             <div>
-              <div className={ui.statLabel}>Attempt {a.number}</div>
+              <div className={ui.statLabel}>Attempt {a.n}</div>
               <div className={ui.muted}>{formatDuration(a.durationMs)}</div>
             </div>
             <div>
               <div className={styles.attemptHead}>
-                <Chip tone={a.passed ? 'passed' : 'failed'}>{a.passed ? 'Passed' : `${a.testsFailed} failed`}</Chip>
+                <Chip tone={a.passed ? 'passed' : 'failed'}>{a.passed ? 'Passed' : `${a.tests.failed} failed`}</Chip>
                 <span className={ui.muted}>
-                  {a.testsTotal - a.testsFailed} of {a.testsTotal} tests passed
+                  {a.tests.passed} of {a.tests.total} tests passed
                 </span>
               </div>
               {a.failures.length > 0 && (
                 <ul className={styles.failures}>
                   {a.failures.map((f) => (
-                    <li key={f.suite + f.test}>
-                      {f.suite} › {f.test}
+                    <li key={f.name}>
+                      {splitTestName(f.name).join(' › ')}
                       <br />
                       <code>{f.message}</code>
                     </li>
@@ -126,15 +134,18 @@ export function RunDetailPage() {
             </tr>
           </thead>
           <tbody>
-            {tests.map((t) => (
-              <tr key={t.suite + t.name}>
-                <td className={ui.mono}>{t.suite}</td>
-                <td>{t.name}</td>
-                <td>
-                  <Chip tone={t.status}>{t.status === 'passed' ? 'Passed' : 'Failed'}</Chip>
-                </td>
-              </tr>
-            ))}
+            {tests.map((t) => {
+              const [suite, test] = splitTestName(t.name);
+              return (
+                <tr key={t.name}>
+                  <td className={ui.mono}>{suite}</td>
+                  <td>{test}</td>
+                  <td>
+                    <Chip tone={t.status}>{t.status === 'passed' ? 'Passed' : 'Failed'}</Chip>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         {tests.length === 0 && <div className={ui.empty}>No failed tests.</div>}

@@ -22,6 +22,6 @@ export function useRun(runId: string | undefined) {
   return useQuery({
     queryKey: runKeys.all,
     queryFn: fetchRuns,
-    select: (d): Run | undefined => d.runs.find((r) => r.id === runId),
+    select: (d): Run | undefined => d.runs.find((r) => r.runId === runId),
   });
 }

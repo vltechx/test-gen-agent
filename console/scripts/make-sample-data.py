@@ -1,7 +1,8 @@
 """Generate SAMPLE run data for the console (public/api/runs.json).
 
 These runs are made up for UI development. Real runs will come from the agents
-writing the same JSON shape (see src/api/types.ts).
+writing the same JSON shape, schemaVersion 1 (see src/api/types.ts).
+Test names match sample-ts/src/cart.test.ts, as Jest reports them ("suite > test").
 """
 import json
 import random
@@ -46,7 +47,19 @@ TESTS = {
         "includes the offending value in the error message",
     ],
 }
-ALL = [(s, n) for s, names in TESTS.items() for n in names]
+ALL = [f"{suite} > {name}" for suite, names in TESTS.items() for name in names]
+
+REPO = Path(__file__).resolve().parents[2]
+TEST_FILE = "sample-ts/src/cart.test.ts"
+TEST_LINES = len((REPO / TEST_FILE).read_text().splitlines())
+MAX_RUNS = 3
+
+# The test a POSSIBLE BUG comment is attached to, and the line the comment would sit on.
+BUG_TEST = "computeTotal > rounds half up to the nearest cent"
+BUG = {
+    "line": 126,
+    "text": "// POSSIBLE BUG: 50% off 999 cents is 499.5, which should round up to 500, but computeTotal returned 499.",
+}
 
 AGENTS = ["langgraph", "semantic-kernel", "agent-framework"]
 FAIL_MESSAGES = [
@@ -70,58 +83,65 @@ PLANS = [
     ("langgraph", "local", [False, True], False),
 ]
 
+def iso(dt: datetime) -> str:
+    return dt.isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def outcome_for(attempts: list, suspected_bugs: list) -> str:
+    # A run with a suspected bug never counts as passed: the flagged test is kept as written.
+    if attempts[-1]["passed"] and not suspected_bugs:
+        return "passed"
+    return "limit_reached" if len(attempts) >= MAX_RUNS else "failed"
+
+
 start = datetime(2026, 11, 12, 14, 0, tzinfo=timezone.utc)
 runs = []
 for i, (agent, trigger, pattern, has_bug) in enumerate(PLANS):
-    started = start + timedelta(hours=17 * i + random.randint(0, 5), minutes=random.randint(0, 59))
+    started = start + timedelta(hours=17 * i + random.randint(0, 5), minutes=random.randint(0, 59),
+                                seconds=random.randint(0, 59))
     attempts = []
     for n, ok in enumerate(pattern, start=1):
         failed = [] if ok else random.sample(ALL, random.randint(1, 4) if n > 1 else random.randint(2, 6))
         attempts.append({
-            "number": n,
+            "n": n,
             "passed": ok,
-            "testsTotal": len(ALL),
-            "testsFailed": len(failed),
             "durationMs": random.randint(2500, 6500),
-            "failures": [
-                {"suite": s, "test": t, "message": random.choice(FAIL_MESSAGES)} for s, t in failed
-            ],
+            "tests": {"total": len(ALL), "passed": len(ALL) - len(failed), "failed": len(failed)},
+            "failures": [{"name": name, "message": random.choice(FAIL_MESSAGES)} for name in failed],
         })
     last = attempts[-1]
-    if has_bug:
-        # A test kept with a POSSIBLE BUG comment still fails, so the run can't pass.
-        bug = ("computeTotal", "rounds half up to the nearest cent")
-        if bug not in {(f["suite"], f["test"]) for f in last["failures"]}:
-            last["failures"].append({"suite": bug[0], "test": bug[1],
-                                     "message": "expect(received).toBe(expected) // Object.is equality"})
-            last["testsFailed"] = len(last["failures"])
-    failed_last = {(f["suite"], f["test"]) for f in last["failures"]}
-    possible_bugs = []
-    if has_bug:
-        possible_bugs.append({
-            "suite": "computeTotal",
-            "test": "rounds half up to the nearest cent",
-            "note": "POSSIBLE BUG: computeTotal uses Math.floor, so 0.5 cents rounds down instead of up.",
-        })
-    status = "passed" if last["passed"] else ("limit_reached" if len(attempts) >= 3 else "failed")
+    suspected_bugs = [dict(BUG)] if has_bug else []
+    if has_bug and BUG_TEST not in {f["name"] for f in last["failures"]}:
+        # The test kept with the POSSIBLE BUG comment still fails in the last attempt.
+        last["failures"].append({"name": BUG_TEST, "message": "expect(received).toBe(expected) // Object.is equality"})
+        last["passed"] = False
+        last["tests"]["failed"] = len(last["failures"])
+        last["tests"]["passed"] = len(ALL) - len(last["failures"])
+    failed_last = {f["name"] for f in last["failures"]}
+
+    duration_ms = sum(a["durationMs"] for a in attempts) + random.randint(15000, 60000)
+    run_id = f"{started.strftime('%Y-%m-%dT%H-%M-%SZ')}_{agent}"
     runs.append({
-        "id": f"run-{1001 + i}",
+        "schemaVersion": 1,
+        "runId": run_id,
         "agent": agent,
-        "trigger": trigger,
-        "pullRequest": 4 + i if trigger == "ci" else None,
         "model": "claude-sonnet-5-5",
+        "startedAt": iso(started),
+        "finishedAt": iso(started + timedelta(milliseconds=duration_ms)),
+        "durationMs": duration_ms,
+        "trigger": {
+            "kind": trigger,
+            "prNumber": 4 + i if trigger == "ci" else None,
+            "commit": f"{random.getrandbits(28):07x}",
+        },
         "sourceFile": "sample-ts/src/cart.ts",
-        "testFile": "sample-ts/src/cart.test.ts",
-        "startedAt": started.isoformat().replace("+00:00", "Z"),
-        "durationMs": sum(a["durationMs"] for a in attempts) + random.randint(15000, 60000),
-        "status": status,
+        "testFile": TEST_FILE,
+        "outcome": outcome_for(attempts, suspected_bugs),
+        "maxRuns": MAX_RUNS,
         "attempts": attempts,
-        "tests": [
-            {"suite": s, "name": t, "status": "failed" if (s, t) in failed_last else "passed"}
-            for s, t in ALL
-        ],
-        "possibleBugs": possible_bugs,
-        "sample": True,
+        "finalTests": [{"name": name, "status": "failed" if name in failed_last else "passed"} for name in ALL],
+        "final": {"testLines": TEST_LINES + len(suspected_bugs), "testCount": len(ALL)},
+        "suspectedBugs": suspected_bugs,
     })
 
 runs.sort(key=lambda r: r["startedAt"], reverse=True)

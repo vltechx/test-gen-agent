@@ -19,7 +19,7 @@ export function Shell() {
             <NavLink to="/" end className={navClass}>
               Home
             </NavLink>
-            <div className={styles.sectionLabel}>Agents</div>
+            <div className={styles.sectionLabel}>Test generation</div>
             <NavLink to="/runs" className={navClass}>
               Runs
             </NavLink>

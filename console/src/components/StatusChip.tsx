@@ -1,17 +1,17 @@
 import type { ReactNode } from 'react';
-import type { RunStatus } from '../api/types';
+import type { Outcome } from '../api/types';
 import ui from './ui.module.css';
 
-const LABELS: Record<RunStatus, string> = {
+const LABELS: Record<Outcome, string> = {
   passed: 'Passed',
   failed: 'Failed',
   limit_reached: 'Limit reached',
 };
 
-type Tone = 'neutral' | RunStatus;
+type Tone = 'neutral' | Outcome;
 
-export function StatusChip({ status }: { status: RunStatus }) {
-  return <span className={`${ui.chip} ${ui[status]}`}>{LABELS[status]}</span>;
+export function StatusChip({ outcome }: { outcome: Outcome }) {
+  return <span className={`${ui.chip} ${ui[outcome]}`}>{LABELS[outcome]}</span>;
 }
 
 export function Chip({ children, tone = 'neutral' }: { children: ReactNode; tone?: Tone }) {

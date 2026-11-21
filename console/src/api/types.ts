@@ -1,52 +1,62 @@
-// The JSON shape every agent run is saved in. The console reads /api/runs.json.
-// Sample data: scripts/make-sample-data.py. Later, each agent writes this shape.
+// The JSON shape every agent run is saved in (schemaVersion 1). The console reads
+// { runs: Run[] } from /api/runs.json, newest first.
+// Sample data: scripts/make-sample-data.py. Later, each agent writes runs/<runId>.json.
 
 export type AgentId = 'langgraph' | 'semantic-kernel' | 'agent-framework';
-export type RunStatus = 'passed' | 'failed' | 'limit_reached';
-export type Trigger = 'ci' | 'local';
+export type Outcome = 'passed' | 'failed' | 'limit_reached';
+
+export interface Trigger {
+  kind: 'local' | 'ci';
+  prNumber: number | null;
+  commit: string;
+}
+
+export interface TestCounts {
+  total: number;
+  passed: number;
+  failed: number;
+}
 
 export interface TestFailure {
-  suite: string;
-  test: string;
+  name: string; // "suite > test"
   message: string;
 }
 
 export interface Attempt {
-  number: number;
+  n: number;
   passed: boolean;
-  testsTotal: number;
-  testsFailed: number;
   durationMs: number;
+  tests: TestCounts;
   failures: TestFailure[];
 }
 
-export interface TestResult {
-  suite: string;
-  name: string;
+export interface FinalTest {
+  name: string; // "suite > test"
   status: 'passed' | 'failed';
 }
 
-export interface PossibleBug {
-  suite: string;
-  test: string;
-  note: string;
+export interface SuspectedBug {
+  line: number; // line in the test file
+  text: string; // "// POSSIBLE BUG: ..."
 }
 
 export interface Run {
-  id: string;
+  schemaVersion: 1;
+  runId: string; // e.g. "2026-11-18T10-42-07Z_langgraph"
   agent: AgentId;
-  trigger: Trigger;
-  pullRequest: number | null;
   model: string;
+  startedAt: string; // ISO 8601
+  finishedAt: string; // ISO 8601
+  durationMs: number;
+  trigger: Trigger;
   sourceFile: string;
   testFile: string;
-  startedAt: string; // ISO 8601
-  durationMs: number;
-  status: RunStatus;
+  outcome: Outcome;
+  maxRuns: number;
   attempts: Attempt[];
-  tests: TestResult[];
-  possibleBugs: PossibleBug[];
-  sample?: boolean;
+  finalTests: FinalTest[];
+  final: { testLines: number; testCount: number };
+  suspectedBugs: SuspectedBug[];
 }
 
 export interface RunsResponse {

@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AGENTS, AGENT_IDS } from '../api/agents';
-import { formatDate, formatDuration, passedCount } from '../api/format';
+import { formatDate, formatDuration, formatTrigger, passedCount } from '../api/format';
 import { useRuns } from '../api/runs';
-import type { RunStatus } from '../api/types';
+import type { Outcome } from '../api/types';
 import { PageHeader } from '../components/PageHeader';
 import { QueryState } from '../components/QueryState';
 import { Chip, StatusChip } from '../components/StatusChip';
 import ui from '../components/ui.module.css';
 
-const STATUSES: { value: RunStatus; label: string }[] = [
+const OUTCOMES: { value: Outcome; label: string }[] = [
   { value: 'passed', label: 'Passed' },
   { value: 'failed', label: 'Failed' },
   { value: 'limit_reached', label: 'Limit reached' },
@@ -17,10 +17,10 @@ const STATUSES: { value: RunStatus; label: string }[] = [
 
 export function RunsPage() {
   const { data: runs, isPending, error } = useRuns();
-  // Filters live in the URL (?agent=...&status=...&q=...), so a filtered view can be shared.
+  // Filters live in the URL (?agent=...&outcome=...&q=...), so a filtered view can be shared.
   const [params, setParams] = useSearchParams();
   const agent = params.get('agent') ?? '';
-  const status = params.get('status') ?? '';
+  const outcome = params.get('outcome') ?? '';
   const q = params.get('q') ?? '';
 
   function setFilter(key: string, value: string) {
@@ -41,10 +41,10 @@ export function RunsPage() {
     return (runs ?? []).filter(
       (r) =>
         (!agent || r.agent === agent) &&
-        (!status || r.status === status) &&
-        (!term || r.id.includes(term) || String(r.pullRequest ?? '').includes(term)),
+        (!outcome || r.outcome === outcome) &&
+        (!term || r.runId.toLowerCase().includes(term) || String(r.trigger.prNumber ?? '').includes(term)),
     );
-  }, [runs, agent, status, q]);
+  }, [runs, agent, outcome, q]);
 
   return (
     <>
@@ -67,15 +67,15 @@ export function RunsPage() {
             </option>
           ))}
         </select>
-        <select className={ui.select} aria-label="Filter by status" value={status} onChange={(e) => setFilter('status', e.target.value)}>
-          <option value="">All statuses</option>
-          {STATUSES.map((s) => (
+        <select className={ui.select} aria-label="Filter by outcome" value={outcome} onChange={(e) => setFilter('outcome', e.target.value)}>
+          <option value="">All outcomes</option>
+          {OUTCOMES.map((s) => (
             <option key={s.value} value={s.value}>
               {s.label}
             </option>
           ))}
         </select>
-        {(agent || status || q) && (
+        {(agent || outcome || q) && (
           <button type="button" className={ui.button} onClick={() => setParams({}, { replace: true })}>
             Clear filters
           </button>
@@ -92,7 +92,7 @@ export function RunsPage() {
                 <th>Run</th>
                 <th>Agent</th>
                 <th>Trigger</th>
-                <th>Status</th>
+                <th>Outcome</th>
                 <th>Tests passed</th>
                 <th>Attempts</th>
                 <th>Possible bugs</th>
@@ -102,20 +102,22 @@ export function RunsPage() {
             </thead>
             <tbody>
               {filtered.map((r) => (
-                <tr key={r.id}>
+                <tr key={r.runId}>
                   <td className={ui.mono}>
-                    <Link to={`/runs/${r.id}`}>{r.id}</Link>
+                    <Link to={`/runs/${r.runId}`}>{r.runId}</Link>
                   </td>
                   <td>{AGENTS[r.agent].name}</td>
-                  <td>{r.trigger === 'ci' ? `CI · PR #${r.pullRequest}` : 'Local'}</td>
+                  <td>{formatTrigger(r.trigger)}</td>
                   <td>
-                    <StatusChip status={r.status} />
+                    <StatusChip outcome={r.outcome} />
                   </td>
                   <td>
-                    {passedCount(r.tests)} / {r.tests.length}
+                    {passedCount(r.finalTests)} / {r.finalTests.length}
                   </td>
-                  <td>{r.attempts.length} / 3</td>
-                  <td>{r.possibleBugs.length > 0 ? <Chip tone="limit_reached">{r.possibleBugs.length}</Chip> : <span className={ui.muted}>0</span>}</td>
+                  <td>
+                    {r.attempts.length} / {r.maxRuns}
+                  </td>
+                  <td>{r.suspectedBugs.length > 0 ? <Chip tone="limit_reached">{r.suspectedBugs.length}</Chip> : <span className={ui.muted}>0</span>}</td>
                   <td className={ui.muted}>{formatDate(r.startedAt)}</td>
                   <td className={ui.muted}>{formatDuration(r.durationMs)}</td>
                 </tr>

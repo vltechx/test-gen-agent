@@ -42,7 +42,7 @@ export function AgentsPage() {
                     <td>{s.total}</td>
                     <td>{pct(s.passRate)}</td>
                     <td>{s.avgAttempts.toFixed(1)}</td>
-                    <td>{s.possibleBugs}</td>
+                    <td>{s.suspectedBugs}</td>
                   </tr>
                 );
               })}

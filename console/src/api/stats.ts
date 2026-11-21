@@ -5,19 +5,19 @@ export interface RunStats {
   passed: number;
   passRate: number; // 0..1
   avgAttempts: number;
-  possibleBugs: number;
+  suspectedBugs: number;
 }
 
 export function computeStats(runs: Run[]): RunStats {
   const total = runs.length;
-  const passed = runs.filter((r) => r.status === 'passed').length;
+  const passed = runs.filter((r) => r.outcome === 'passed').length;
   const attempts = runs.reduce((sum, r) => sum + r.attempts.length, 0);
   return {
     total,
     passed,
     passRate: total ? passed / total : 0,
     avgAttempts: total ? attempts / total : 0,
-    possibleBugs: runs.reduce((sum, r) => sum + r.possibleBugs.length, 0),
+    suspectedBugs: runs.reduce((sum, r) => sum + r.suspectedBugs.length, 0),
   };
 }
 

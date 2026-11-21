@@ -34,7 +34,7 @@ function Overview({ runs }: { runs: NonNullable<ReturnType<typeof useRuns>['data
         <Stat label="Runs" value={String(s.total)} />
         <Stat label="Pass rate" value={pct(s.passRate)} />
         <Stat label="Average attempts" value={s.avgAttempts.toFixed(1)} />
-        <Stat label="Possible bugs flagged" value={String(s.possibleBugs)} />
+        <Stat label="Possible bugs flagged" value={String(s.suspectedBugs)} />
       </div>
 
       <h2 className={ui.sectionTitle}>Latest runs</h2>
@@ -44,19 +44,19 @@ function Overview({ runs }: { runs: NonNullable<ReturnType<typeof useRuns>['data
             <tr>
               <th>Run</th>
               <th>Agent</th>
-              <th>Status</th>
+              <th>Outcome</th>
               <th>Started</th>
             </tr>
           </thead>
           <tbody>
             {latest.map((r) => (
-              <tr key={r.id}>
+              <tr key={r.runId}>
                 <td className={ui.mono}>
-                  <Link to={`/runs/${r.id}`}>{r.id}</Link>
+                  <Link to={`/runs/${r.runId}`}>{r.runId}</Link>
                 </td>
                 <td>{AGENTS[r.agent].name}</td>
                 <td>
-                  <StatusChip status={r.status} />
+                  <StatusChip outcome={r.outcome} />
                 </td>
                 <td className={ui.muted}>{formatDate(r.startedAt)}</td>
               </tr>

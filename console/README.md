@@ -15,7 +15,7 @@ the same JSON shape (`src/api/types.ts`) after every run.
 | UI | React 19 + TypeScript |
 | Routing | React Router (layout route + `<Outlet />`) |
 | Server state | TanStack Query (one cached `['runs']` query; `select` derives a single run) |
-| URL state | Filters in search params (`?agent=...&status=...&q=...`) |
+| URL state | Filters in search params (`?agent=...&outcome=...&q=...`) |
 | Styling | CSS Modules + CSS variables |
 | Hosting | Vercel (`vercel.json` rewrites routes to `index.html`) |
 
@@ -43,7 +43,7 @@ src/
 
 ## Next steps
 
-1. Agents write `runs/<id>.json`; a script merges them into `public/api/runs.json`.
+1. Agents write `runs/<runId>.json`; a script merges them into `public/api/runs.json`.
 2. React Testing Library tests for the Runs filters and Run detail page.
 3. Lazy-load routes (`React.lazy`) and check the bundle.
 4. Deploy to Vercel with `console/` as the project root.
