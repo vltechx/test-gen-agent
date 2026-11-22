@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, UIMatch } from 'react-router';
 import { Shell } from './components/Shell';
 import { AgentsPage } from './pages/AgentsPage';
 import { HomePage } from './pages/HomePage';
@@ -11,11 +11,22 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <Shell />,
+    handle: { crumb: () => 'Home' },
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'runs', element: <RunsPage /> },
-      { path: 'runs/:runId', element: <RunDetailPage /> },
-      { path: 'agents', element: <AgentsPage /> },
+      {
+        path: 'runs',
+        handle: { crumb: () => 'Runs' },
+        children: [
+          { index: true, element: <RunsPage /> },
+          {
+            path: ':runId',
+            element: <RunDetailPage />,
+            handle: { crumb: (m: UIMatch) => m.params.runId ?? '' },
+          },
+        ],
+      },
+      { path: 'agents', element: <AgentsPage />, handle: { crumb: () => 'Agents' } },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

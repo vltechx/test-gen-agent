@@ -15,12 +15,10 @@ export function RunDetailPage() {
   const { data: run, isPending, error } = useRun(runId);
   const [failedOnly, setFailedOnly] = useState(false);
 
-  const crumbs = [{ label: 'Runs', to: '/runs' }, { label: runId ?? '' }];
-
   if (isPending || error) {
     return (
       <>
-        <PageHeader title={runId ?? 'Run'} crumbs={crumbs} />
+        <PageHeader title={runId ?? 'Run'} />
         <QueryState isPending={isPending} error={error} />
       </>
     );
@@ -29,7 +27,7 @@ export function RunDetailPage() {
   if (!run) {
     return (
       <>
-        <PageHeader title="Run not found" crumbs={crumbs} />
+        <PageHeader title="Run not found" />
         <p className={ui.muted}>There is no run with ID {runId}.</p>
       </>
     );
@@ -40,7 +38,7 @@ export function RunDetailPage() {
 
   return (
     <>
-      <PageHeader title={run.runId} crumbs={crumbs} />
+      <PageHeader title={run.runId} />
       <div className={styles.meta}> 
         <StatusChip outcome={run.outcome} />
         <span>
