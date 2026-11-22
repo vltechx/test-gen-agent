@@ -21,6 +21,7 @@ export function RunsPage() {
   const [params, setParams] = useSearchParams();
   const agent = params.get('agent') ?? '';
   const outcome = params.get('outcome') ?? '';
+  const sort = params.get('sort') === 'oldest' ? 'oldest' : 'newest';
   const q = params.get('q') ?? '';
 
   function setFilter(key: string, value: string) {
@@ -45,6 +46,20 @@ export function RunsPage() {
         (!term || r.runId.toLowerCase().includes(term) || String(r.trigger.prNumber ?? '').includes(term)),
     );
   }, [runs, agent, outcome, q]);
+
+  const sorted = [...filtered].sort((a, b) =>
+  sort === 'newest'
+    ? b.startedAt.localeCompare(a.startedAt)
+    : a.startedAt.localeCompare(b.startedAt)
+  );
+
+  function toggleSort() {
+  setParams((prev) => {
+    const next = new URLSearchParams(prev);
+    next.set('sort', sort === 'newest' ? 'oldest' : 'newest');
+    return next;
+  });
+}
 
   return (
     <>
@@ -96,12 +111,16 @@ export function RunsPage() {
                 <th>Tests passed</th>
                 <th>Attempts</th>
                 <th>Possible bugs</th>
-                <th>Started</th>
+                <th>
+                  <button type="button" onClick={toggleSort}>
+                    Started {sort === 'newest' ? '↓' : '↑'}
+                  </button>
+                </th>
                 <th>Duration</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((r) => (
+              {sorted.map((r) => (
                 <tr key={r.runId}>
                   <td className={ui.mono}>
                     <Link to={`/runs/${r.runId}`}>{r.runId}</Link>
