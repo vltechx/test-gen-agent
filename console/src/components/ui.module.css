@@ -74,6 +74,20 @@
 }
 .button:hover { background: #faf9f6; }
 
+.sortButton {
+  all: unset;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+}
+
+.sortButton:focus-visible {
+  outline: 2px solid #6b8afd;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
 /* Messages */
 .error { color: var(--red); background: var(--red-bg); padding: 12px 16px; border-radius: var(--radius); }
 .loading { color: var(--text-muted); padding: 24px 0; }

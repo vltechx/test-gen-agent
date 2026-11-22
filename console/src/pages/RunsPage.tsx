@@ -112,7 +112,7 @@ export function RunsPage() {
                 <th>Attempts</th>
                 <th>Possible bugs</th>
                 <th>
-                  <button type="button" onClick={toggleSort}>
+                  <button type="button" className={ui.sortButton} onClick={toggleSort}>
                     Started {sort === 'newest' ? '↓' : '↑'}
                   </button>
                 </th>
