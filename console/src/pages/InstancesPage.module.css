@@ -1,0 +1,28 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.booting { background: var(--amber-bg); color: var(--amber); }
+.running { background: var(--green-bg); color: var(--green); }
+
+.empty {
+  text-align: center;
+  padding: 64px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.empty h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+.empty p { color: var(--text-muted); margin: 0 0 20px; }

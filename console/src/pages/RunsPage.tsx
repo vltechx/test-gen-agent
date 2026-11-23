@@ -66,11 +66,6 @@ export function RunsPage() {
       <PageHeader
         title="Runs"
         subtitle="Every test-generation run, newest first."
-        actions={
-          <Link to="/launch" className={ui.primaryButton}>
-            Launch instance
-          </Link>
-        }
       />
 
       <div className={ui.filters}>
