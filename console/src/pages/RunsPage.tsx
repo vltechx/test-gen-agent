@@ -16,7 +16,6 @@ const OUTCOMES: { value: Outcome; label: string }[] = [
 ];
 
 export function RunsPage() {
-  
   const { data: runs, isPending, error } = useRuns();
   // Filters live in the URL (?agent=...&outcome=...&q=...), so a filtered view can be shared.
   const [params, setParams] = useSearchParams();
@@ -64,7 +63,15 @@ export function RunsPage() {
 
   return (
     <>
-      <PageHeader title="Runs" subtitle="Every test-generation run, newest first." />
+      <PageHeader
+        title="Runs"
+        subtitle="Every test-generation run, newest first."
+        actions={
+          <Link to="/launch" className={ui.primaryButton}>
+            Launch instance
+          </Link>
+        }
+      />
 
       <div className={ui.filters}>
         <input

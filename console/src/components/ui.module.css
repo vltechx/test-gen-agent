@@ -3,7 +3,9 @@
 .breadcrumbs a { text-decoration: none; }
 .breadcrumbs a:hover { text-decoration: underline; }
 .breadcrumbs .separator { margin: 0 6px; }
-.title { font-size: 26px; font-weight: 600; margin: 0 0 25px; }
+.titleRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 25px; }
+.title { font-size: 26px; font-weight: 600; margin: 0; }
+.actions { display: flex; gap: 8px; flex-shrink: 0; }
 .subtitle { color: var(--text-muted); margin: 0 0 24px; }
 
 /* Status chips */
@@ -87,6 +89,32 @@
   outline: 2px solid #6b8afd;
   outline-offset: 2px;
   border-radius: 3px;
+}
+
+.primaryButton {
+  font: inherit;
+  background: #2b2b2b;
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: #000;
+}
+
+.primaryButton:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
 }
 
 /* Messages */

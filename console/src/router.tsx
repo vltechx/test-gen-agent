@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RunDetailPage } from './pages/RunDetailPage';
 import { RunsPage } from './pages/RunsPage';
+import { LaunchPage } from './pages/LaunchPage';
 
 // Shell is the layout route: its <Outlet /> renders the matched child page.
 export const router = createBrowserRouter([
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: 'agents', element: <AgentsPage />, handle: { crumb: () => 'Agents' } },
+      { path: 'launch', element: <LaunchPage />, handle: { crumb: () => 'Launch instance' } },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

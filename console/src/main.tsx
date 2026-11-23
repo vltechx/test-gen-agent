@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')!).render(
       <ToastProvider>
         <RouterProvider router={router} />
       </ToastProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
   </StrictMode>,
 );
