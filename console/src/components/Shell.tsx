@@ -26,6 +26,9 @@ export function Shell() {
             <NavLink to="/agents" className={navClass}>
               Agents
             </NavLink>
+            <NavLink to="/instances" className={navClass}>
+              Instances
+            </NavLink>
           </nav>
         </aside>
         <main className={styles.main}>

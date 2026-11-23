@@ -1,3 +1,14 @@
+export type InstanceStatus = 'booting' | 'running';
+
+export type Instance = LaunchRequest & {
+  id: string;
+  status: InstanceStatus;
+  launchedAt: number;
+};
+
+const instances: Instance[] = [];
+const BOOT_MS = 8000;
+
 export type LaunchOptions = {
   instanceTypes: string[];
   regions: string[];
@@ -26,5 +37,16 @@ export async function launchInstance(req: LaunchRequest): Promise<{ id: string }
   if (req.instanceType.startsWith('8x')) {
     throw new Error('Not enough capacity for 8x H100 in this region. Try another region.');
   }
-  return { id: `inst-${Date.now()}` };
+  const id = `inst-${Date.now()}`;
+  instances.unshift({ ...req, id, status: 'booting', launchedAt: Date.now() });
+  return { id };
+}
+
+export async function listInstances(): Promise<Instance[]> {
+  await delay(200);
+  const now = Date.now();
+  return instances.map((i) => ({
+    ...i,
+    status: now - i.launchedAt > BOOT_MS ? 'running' : 'booting',
+  }));
 }

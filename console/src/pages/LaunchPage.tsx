@@ -7,11 +7,13 @@ import { PageHeader } from '../components/PageHeader';
 import { QueryState } from '../components/QueryState';
 import ui from '../components/ui.module.css';
 import styles from './LaunchPage.module.css';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function LaunchPage() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [instanceType, setInstanceType] = useState('');
+  const queryClient = useQueryClient();
   const [region, setRegion] = useState('');
   const [image, setImage] = useState('');
 
@@ -20,8 +22,9 @@ export function LaunchPage() {
   const launch = useMutation({
     mutationFn: launchInstance,
     onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['instances'] });
       showToast(`Instance ${res.id} is launching.`);
-      navigate('/runs');
+      navigate('/instances');
     },
     onError: (err) => showToast(err.message),
   });
