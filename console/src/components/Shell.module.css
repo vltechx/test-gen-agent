@@ -1,0 +1,43 @@
+.shell { display: flex; flex-direction: column; height: 100%; }
+
+.banner {
+  background: var(--amber-bg);
+  color: var(--amber);
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.frame { display: flex; flex: 1; min-height: 0; }
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.logo { font-weight: 700; font-size: 15px; padding: 4px 8px 16px; }
+.logo span { color: var(--text-muted); font-weight: 400; }
+
+.sectionLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 12px 8px 4px;
+}
+
+.navItem {
+  display: block;
+  padding: 7px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-muted);
+}
+.navItem:hover { background: #ebe8e0; color: var(--text); }
+.active { background: #e4e0d5; color: var(--text); font-weight: 600; }
+
+.main { flex: 1; overflow: auto; padding: 24px 32px 48px; }
+.content { max-width: 1100px; }
