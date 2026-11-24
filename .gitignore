@@ -7,3 +7,6 @@ coverage/
 # .NET build output
 bin/
 obj/
+
+# macOS Finder metadata
+.DS_Store
