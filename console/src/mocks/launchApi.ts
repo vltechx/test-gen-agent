@@ -1,10 +1,13 @@
-export type InstanceStatus = 'booting' | 'running';
+export type InstanceStatus = 'booting' | 'running' | 'terminating';
 
 export type Instance = LaunchRequest & {
   id: string;
   status: InstanceStatus;
   launchedAt: number;
+  terminatedAt?: number;
 };
+
+const TERMINATE_MS = 4000;
 
 const instances: Instance[] = [];
 const BOOT_MS = 8000;
@@ -42,11 +45,22 @@ export async function launchInstance(req: LaunchRequest): Promise<{ id: string }
   return { id };
 }
 
+export async function terminateInstance(id: string): Promise<void> {
+  await delay(500);
+  const inst = instances.find((i) => i.id === id);
+  if (!inst) throw new Error(`Instance ${id} not found.`);
+  inst.terminatedAt = Date.now();
+}
+
+function statusOf(i: Instance, now: number): InstanceStatus {
+  if (i.terminatedAt) return 'terminating';
+  return now - i.launchedAt > BOOT_MS ? 'running' : 'booting';
+}
+
 export async function listInstances(): Promise<Instance[]> {
   await delay(200);
   const now = Date.now();
-  return instances.map((i) => ({
-    ...i,
-    status: now - i.launchedAt > BOOT_MS ? 'running' : 'booting',
-  }));
+  return instances
+    .filter((i) => !i.terminatedAt || now - i.terminatedAt < TERMINATE_MS)
+    .map((i) => ({ ...i, status: statusOf(i, now) }));
 }

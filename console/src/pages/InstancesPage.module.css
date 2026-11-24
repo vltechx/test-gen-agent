@@ -16,6 +16,7 @@
 }
 .booting { background: var(--amber-bg); color: var(--amber); }
 .running { background: var(--green-bg); color: var(--green); }
+.terminating { background: #ececec; color: #666; }
 
 .empty {
   text-align: center;
