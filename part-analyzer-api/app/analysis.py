@@ -114,6 +114,11 @@ def check_dfm(mesh: trimesh.Trimesh) -> list[DfmWarning]:
     return [w for w in results if w is not None]
 
 
+def has_errors(warnings: list[DfmWarning]) -> bool:
+    """True if any warning means the part cannot be made as-is."""
+    return any(w["severity"] == "error" for w in warnings)
+
+
 def analyze_mesh(mesh: trimesh.Trimesh) -> Analysis:
     """Measure a mesh. Volume is only meaningful when the mesh is watertight."""
     low, high = mesh.bounds
