@@ -2,17 +2,14 @@ from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException, UploadFile
 
-from app.analysis import Analysis, InvalidMeshError, analyze_stl, has_errors
-from app.pricing import Material, Quote, quote_part
+from app.analysis import InvalidMeshError, analyze_stl, has_errors
+from app.models import ANALYZE_RESPONSE_EXAMPLES, AnalyzeResponse, Material
+from app.pricing import quote_part
 
 app = FastAPI(title="Part Analyzer API")
 
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
 MAX_QUANTITY = 1000
-
-
-class AnalyzeResponse(Analysis):
-    quote: Quote | None  # None when an error-severity DFM warning blocks manufacturing
 
 
 @app.get("/health")
@@ -21,14 +18,21 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/analyze")
+@app.post(
+    "/analyze",
+    response_model=AnalyzeResponse,
+    responses={
+        200: {"content": {"application/json": {"examples": ANALYZE_RESPONSE_EXAMPLES}}},
+        400: {"description": "Not a .stl file, or the file could not be read as STL."},
+        413: {"description": "File is larger than 50 MB."},
+    },
+)
 async def analyze(
     file: UploadFile,
-    material: Annotated[Material, Form()] = "PA12",
-    quantity: Annotated[int, Form(ge=1, le=MAX_QUANTITY)] = 1,
+    material: Annotated[Material, Form(description="Material to quote.")] = "PA12",
+    quantity: Annotated[int, Form(ge=1, le=MAX_QUANTITY, description="Number of parts to quote.")] = 1,
 ) -> AnalyzeResponse:
-    """Upload an STL file (multipart form field "file") and get geometry facts,
-    DFM warnings and a FAKE quote. Optional form fields: material, quantity."""
+    """Upload an STL file and get geometry facts, DFM warnings and a FAKE quote."""
     if not (file.filename or "").lower().endswith(".stl"):
         raise HTTPException(status_code=400, detail="Please upload a .stl file.")
 
@@ -41,5 +45,5 @@ async def analyze(
     except InvalidMeshError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    quote = None if has_errors(analysis["warnings"]) else quote_part(analysis["volume_mm3"], material, quantity)
-    return {**analysis, "quote": quote}
+    quote = None if has_errors(analysis.warnings) else quote_part(analysis.volume_mm3, material, quantity)
+    return AnalyzeResponse(**analysis.model_dump(), quote=quote)

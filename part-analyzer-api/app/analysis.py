@@ -1,39 +1,16 @@
 """Geometry analysis for STL files. No web code here, so it is easy to test on its own."""
 
 from io import BytesIO
-from typing import Literal, TypedDict
 
 import numpy as np
 import trimesh
+
+from app.models import Analysis, BoundingBox, DfmWarning
 
 # STL files have no units. We assume millimetres, the usual convention for 3D printing.
 
 BUILD_VOLUME_MM: tuple[float, float, float] = (380.0, 284.0, 380.0)
 FIT_TOLERANCE_MM = 1e-6  # ignore floating-point noise when a part exactly touches the limit
-
-Severity = Literal["error", "warning"]
-WarningCode = Literal["EXCEEDS_BUILD_VOLUME", "NOT_WATERTIGHT"]
-
-
-class DfmWarning(TypedDict):
-    code: WarningCode  # stable, machine-readable id for clients to switch on
-    severity: Severity  # "error" = cannot be made as-is, "warning" = may cause problems
-    message: str  # human-readable explanation
-
-
-class BoundingBox(TypedDict):
-    min: list[float]  # [x, y, z] of the lowest corner, in mm
-    max: list[float]  # [x, y, z] of the highest corner, in mm
-    size: list[float]  # [x, y, z] width, depth, height, in mm
-
-
-class Analysis(TypedDict):
-    volume_mm3: float
-    surface_area_mm2: float
-    bounding_box: BoundingBox
-    watertight: bool
-    triangle_count: int
-    warnings: list[DfmWarning]
 
 
 class InvalidMeshError(ValueError):
@@ -85,27 +62,27 @@ def check_build_volume(mesh: trimesh.Trimesh) -> DfmWarning | None:
     if any(_fits(size, BUILD_VOLUME_MM) for size in candidates):
         return None
     smallest = min(candidates, key=lambda s: float(np.prod(s)))
-    return {
-        "code": "EXCEEDS_BUILD_VOLUME",
-        "severity": "error",
-        "message": (
+    return DfmWarning(
+        code="EXCEEDS_BUILD_VOLUME",
+        severity="error",
+        message=(
             f"Part is about {_format_size(smallest)} mm and does not fit the "
             f"{_format_size(BUILD_VOLUME_MM)} mm build volume in any orientation checked."
         ),
-    }
+    )
 
 
 def check_watertight(mesh: trimesh.Trimesh) -> DfmWarning | None:
     if mesh.is_watertight:
         return None
-    return {
-        "code": "NOT_WATERTIGHT",
-        "severity": "warning",
-        "message": (
+    return DfmWarning(
+        code="NOT_WATERTIGHT",
+        severity="warning",
+        message=(
             "Mesh has holes or gaps, so it is not a closed solid. "
             "It may not print correctly, and the reported volume is unreliable."
         ),
-    }
+    )
 
 
 def check_dfm(mesh: trimesh.Trimesh) -> list[DfmWarning]:
@@ -116,24 +93,20 @@ def check_dfm(mesh: trimesh.Trimesh) -> list[DfmWarning]:
 
 def has_errors(warnings: list[DfmWarning]) -> bool:
     """True if any warning means the part cannot be made as-is."""
-    return any(w["severity"] == "error" for w in warnings)
+    return any(w.severity == "error" for w in warnings)
 
 
 def analyze_mesh(mesh: trimesh.Trimesh) -> Analysis:
     """Measure a mesh. Volume is only meaningful when the mesh is watertight."""
     low, high = mesh.bounds
-    return {
-        "volume_mm3": round(float(abs(mesh.volume)), 3),
-        "surface_area_mm2": round(float(mesh.area), 3),
-        "bounding_box": {
-            "min": _rounded(low),
-            "max": _rounded(high),
-            "size": _rounded(mesh.extents),
-        },
-        "watertight": bool(mesh.is_watertight),
-        "triangle_count": int(len(mesh.faces)),
-        "warnings": check_dfm(mesh),
-    }
+    return Analysis(
+        volume_mm3=round(float(abs(mesh.volume)), 3),
+        surface_area_mm2=round(float(mesh.area), 3),
+        bounding_box=BoundingBox(min=_rounded(low), max=_rounded(high), size=_rounded(mesh.extents)),
+        watertight=bool(mesh.is_watertight),
+        triangle_count=int(len(mesh.faces)),
+        warnings=check_dfm(mesh),
+    )
 
 
 def analyze_stl(data: bytes) -> Analysis:
