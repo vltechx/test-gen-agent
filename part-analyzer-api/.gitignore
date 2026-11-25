@@ -1,0 +1,12 @@
+# Virtual environment: installed libraries, recreate with `pip install -r requirements.txt`
+.venv/
+
+# Python bytecode cache, regenerated automatically
+__pycache__/
+*.pyc
+
+# pytest cache (used from step 6)
+.pytest_cache/
+
+# Local secrets
+.env

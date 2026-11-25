@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]  # lets tests `import app...` when pytest runs from this folder
+addopts = "-ra"  # print a short summary of anything skipped or failed
