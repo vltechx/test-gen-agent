@@ -10,3 +10,9 @@ stack_name = "part-analyzer-api"
 resolve_s3 = true  # let SAM create/manage the S3 bucket that holds the uploaded code
 capabilities = "CAPABILITY_IAM"  # allow SAM to create the function's IAM role
 confirm_changeset = true  # show what will change in AWS and ask before applying
+s3_prefix = "part-analyzer-api"
+region = "us-east-2"
+image_repositories = []
+
+[default.global.parameters]
+region = "us-east-2"
