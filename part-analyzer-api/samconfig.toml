@@ -1,0 +1,12 @@
+# Default options for the `sam` CLI, so plain `sam build` / `sam deploy` do the right thing.
+version = 0.1
+
+[default.build.parameters]
+use_container = true  # compile numpy & co. inside a Lambda-like Linux container, not on macOS
+cached = true
+
+[default.deploy.parameters]
+stack_name = "part-analyzer-api"
+resolve_s3 = true  # let SAM create/manage the S3 bucket that holds the uploaded code
+capabilities = "CAPABILITY_IAM"  # allow SAM to create the function's IAM role
+confirm_changeset = true  # show what will change in AWS and ask before applying
