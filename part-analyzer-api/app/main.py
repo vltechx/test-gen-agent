@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException, UploadFile
+from mangum import Mangum
 
 from app.analysis import InvalidMeshError, analyze_stl, has_errors
 from app.models import ANALYZE_RESPONSE_EXAMPLES, AnalyzeResponse, Material
@@ -47,3 +48,9 @@ async def analyze(
 
     quote = None if has_errors(analysis.warnings) else quote_part(analysis.volume_mm3, material, quantity)
     return AnalyzeResponse(**analysis.model_dump(), quote=quote)
+
+
+# AWS Lambda entry point. Configure the function's handler as "app.main.handler".
+# Mangum turns API Gateway events into ASGI requests for `app`, and the responses back.
+# Locally, uvicorn serves `app` directly and never touches this.
+handler = Mangum(app, lifespan="off")  # "off": the app has no startup/shutdown hooks to run

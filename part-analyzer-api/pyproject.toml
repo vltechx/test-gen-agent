@@ -2,3 +2,7 @@
 testpaths = ["tests"]
 pythonpath = ["."]  # lets tests `import app...` when pytest runs from this folder
 addopts = "-ra"  # print a short summary of anything skipped or failed
+filterwarnings = [
+    # Mangum 0.22 calls asyncio.get_event_loop() internally; harmless, not our code.
+    "ignore:There is no current event loop:DeprecationWarning:mangum.*",
+]

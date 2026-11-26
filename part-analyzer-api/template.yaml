@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Part Analyzer API - FastAPI on AWS Lambda behind an HTTP API (learning project, fake quotes).
+
+Resources:
+  PartAnalyzerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .                    # this folder: app/ plus requirements.txt (SAM skips .venv and caches)
+      Handler: app.main.handler     # the Mangum wrapper in app/main.py
+      Runtime: python3.12
+      Architectures:
+        - arm64                     # Graviton: cheaper per ms, and builds natively on Apple Silicon
+      MemorySize: 1024              # MB. numpy + trimesh need headroom; Lambda also gives more CPU with more memory
+      Timeout: 30                   # seconds; HTTP API stops waiting after 30 s anyway
+      Events:
+        HttpApi:
+          Type: HttpApi             # no Path/Method = one catch-all route, FastAPI does the routing
+
+  # Created explicitly so logs expire instead of being kept (and billed) forever.
+  PartAnalyzerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${PartAnalyzerFunction}
+      RetentionInDays: 14
+
+Outputs:
+  ApiUrl:
+    Description: Base URL of the API. Try <ApiUrl>health and <ApiUrl>docs
+    Value: !Sub https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/
+  FunctionName:
+    Description: Lambda function name, for `sam logs` or the AWS console
+    Value: !Ref PartAnalyzerFunction
