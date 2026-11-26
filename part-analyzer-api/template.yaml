@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Part Analyzer API - FastAPI on AWS Lambda behind an HTTP API (learning project, fake quotes).
 
+Parameters:
+  AllowedOrigins:
+    Type: String
+    Default: ""
+    Description: Extra browser origins allowed to call the API (CORS), comma-separated, e.g. https://console.example.com. http://localhost:5173 is always allowed.
+
 Resources:
   PartAnalyzerFunction:
     Type: AWS::Serverless::Function
@@ -13,6 +19,9 @@ Resources:
         - arm64                     # Graviton: cheaper per ms, and builds natively on Apple Silicon
       MemorySize: 1024              # MB. numpy + trimesh need headroom; Lambda also gives more CPU with more memory
       Timeout: 30                   # seconds; HTTP API stops waiting after 30 s anyway
+      Environment:
+        Variables:
+          ALLOWED_ORIGINS: !Ref AllowedOrigins   # read by app/main.py at startup
       Events:
         HttpApi:
           Type: HttpApi             # no Path/Method = one catch-all route, FastAPI does the routing
