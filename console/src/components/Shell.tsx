@@ -1,15 +1,22 @@
-import { NavLink, Outlet } from 'react-router';
+import { NavLink, Outlet, useMatches } from 'react-router';
 import styles from './Shell.module.css';
+
+type ShellHandle = { hideSampleBanner?: boolean };
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? `${styles.navItem} ${styles.active}` : styles.navItem;
 
 export function Shell() {
+  // A route opts out of the banner with handle: { hideSampleBanner: true }.
+  const hideBanner = useMatches().some((m) => (m.handle as ShellHandle | undefined)?.hideSampleBanner);
+
   return (
     <div className={styles.shell}>
-      <div className={styles.banner} role="status">
-        Showing sample data. Real runs appear once the agents save their results as JSON.
-      </div>
+      {!hideBanner && (
+        <div className={styles.banner} role="status">
+          Showing sample data. Real runs appear once the agents save their results as JSON.
+        </div>
+      )}
       <div className={styles.frame}>
         <aside className={styles.sidebar}>
           <div className={styles.logo}>
@@ -28,6 +35,10 @@ export function Shell() {
             </NavLink>
             <NavLink to="/instances" className={navClass}>
               Instances
+            </NavLink>
+            <div className={styles.sectionLabel}>Manufacturing</div>
+            <NavLink to="/part-analyzer" className={navClass}>
+              Part Analyzer
             </NavLink>
           </nav>
         </aside>

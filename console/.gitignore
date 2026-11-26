@@ -1,3 +1,7 @@
 node_modules/
 dist/
 .vite/
+
+# Local env files hold per-machine settings (API URLs, keys). Commit .env.example instead.
+.env.local
+.env.*.local

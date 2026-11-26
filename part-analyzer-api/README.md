@@ -85,6 +85,29 @@ Keep the inner double quotes when the value has commas. To avoid typing it every
 
 **Upload limit:** Lambda caps request payloads at 6 MB, and API Gateway sends the file base64-encoded. In practice that means STL files of about 4.5 MB or less when deployed. Locally the limit is 50 MB.
 
+### Rate limits (abuse protection)
+
+`template.yaml` sets two limits so that a flood of requests can't run up the bill:
+
+- **API throttle: 5 requests per second, with bursts up to 10.** This is set in `Globals` → `HttpApi` → `DefaultRouteSettings` and applies to the API's catch-all route. API Gateway uses a token bucket: the bucket holds up to 10 tokens and refills at 5 per second. Each request takes one token, and a request that finds the bucket empty is rejected before Lambda runs, so it costs no Lambda time. The limit is **shared by all callers**, not per IP or per user, because HTTP APIs have no per-client limits. One noisy client can use it all up.
+- **Lambda reserved concurrency: 2.** `ReservedConcurrentExecutions: 2` means at most two copies of the function run at the same time. It also sets aside 2 of the account's concurrency for this function. Lambda requires a minimum amount of unreserved concurrency in each account. If your account's total limit is low (some new accounts get 10), the deploy fails with `Specified ReservedConcurrentExecutions ... decreases account's UnreservedConcurrentExecution below its minimum value`. Check with `aws lambda get-account-settings --region us-east-2`, then either request a quota increase or remove that line.
+
+**What a client sees when it's throttled:**
+
+- Over the API throttle, the response is **HTTP 429** with the body `{"message":"Too Many Requests"}`, sent by API Gateway. There is no `Retry-After` header, so clients should wait briefly and retry with backoff.
+- **In a browser, the 429 shows up as a network error instead.** API Gateway writes that response itself, without FastAPI, so it has no `Access-Control-Allow-Origin` header. The browser blocks the page from reading it and `fetch` throws. In the console this looks like "no response / CORS refused", not "HTTP 429".
+- If more than 2 requests need Lambda at once, Lambda refuses the extra ones. API Gateway usually passes this on as **HTTP 500** `{"message":"Internal Server Error"}`, not 429. Warm requests take about 20 ms, so this is rare at 5 requests per second. It is most likely during cold starts (about 1.3 s) or with large uploads.
+
+To see the throttle work, send 30 requests at once:
+
+```bash
+URL=$(aws cloudformation describe-stacks --stack-name part-analyzer-api --region us-east-2 \
+  --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" --output text)
+(for i in $(seq 30); do curl -s -o /dev/null -w '%{http_code}\n' "${URL}health" & done; wait) | sort | uniq -c
+```
+
+Expect about 10 responses of `200` and the rest `429`. Any `500`s are Lambda's limit of 2 concurrent copies. To change the limits, edit `template.yaml` and run `sam build && sam deploy`.
+
 ## Performance
 
 These figures were measured on the deployed function (arm64, 1024 MB):
