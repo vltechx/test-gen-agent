@@ -2,6 +2,8 @@
 
 One test-generation agent, built three ways.
 
+**Live demo:** https://test-gen-agent-one.vercel.app. This is the web console in `console/`; see its README for what's live and what's sample data.
+
 ## What it does
 
 The agent reads `sample-ts/src/cart.ts`, asks Claude to write Jest tests for it, writes them to
