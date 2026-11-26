@@ -16,3 +16,5 @@ image_repositories = []
 
 [default.global.parameters]
 region = "us-east-2"
+
+parameter_overrides = "AllowedOrigins=\"https://test-gen-agent-one.vercel.app\""
