@@ -1,7 +1,7 @@
 # Part Analyzer API
 
 Small FastAPI service that analyzes an uploaded STL file and returns geometry facts,
-simple DFM warnings, and a fake quote. Personal learning project (not production, not PTC work).
+simple DFM warnings, and a fake quote. Personal learning project (not production).
 
 ## Stack
 - Python 3.12, FastAPI, Pydantic v2, trimesh, numpy
