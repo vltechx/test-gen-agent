@@ -1,16 +1,35 @@
+import os
 from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 from app.analysis import InvalidMeshError, analyze_stl, has_errors
 from app.models import ANALYZE_RESPONSE_EXAMPLES, AnalyzeResponse, Material
 from app.pricing import quote_part
 
-app = FastAPI(title="Part Analyzer API")
-
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
 MAX_QUANTITY = 1000
+CONSOLE_DEV_ORIGIN = "http://localhost:5173"  # the console's Vite dev server
+
+
+def allowed_origins(extra: str) -> list[str]:
+    """The console dev server plus the comma-separated origins in `extra` (from ALLOWED_ORIGINS)."""
+    origins = [CONSOLE_DEV_ORIGIN]
+    for origin in extra.split(","):
+        origin = origin.strip().rstrip("/")  # browsers send origins without a trailing slash
+        if origin and origin != "*" and origin not in origins:  # never allow every site
+            origins.append(origin)
+    return origins
+
+
+app = FastAPI(title="Part Analyzer API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins(os.environ.get("ALLOWED_ORIGINS", "")),
+    allow_methods=["GET", "POST"],
+)
 
 
 @app.get("/health")

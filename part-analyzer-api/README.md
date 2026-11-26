@@ -27,6 +27,7 @@ client ──HTTP──▶ API Gateway (HTTP API) ──event──▶ Lambda: M
 - **trimesh + numpy:** load the STL and measure it. The rotation-aware fit check compares sorted extents and a PCA-aligned box.
 - **Mangum:** `app.main.handler` translates Lambda events into ASGI requests, so the same app runs locally under uvicorn and on Lambda.
 - **API Gateway HTTP API:** a single catch-all route; FastAPI does the routing.
+- **CORS:** FastAPI's `CORSMiddleware` lets browser apps on trusted origins call the API, using only GET and POST (see below).
 - **AWS SAM:** `template.yaml` defines the function (Python 3.12, arm64, 1024 MB, 30 s timeout), the HTTP API and a log group that keeps logs for 14 days. `samconfig.toml` holds the build and deploy defaults.
 
 ## Run locally
@@ -50,10 +51,11 @@ curl -F file=@samples/cube_10mm.stl -F material=RESIN -F quantity=2 http://127.0
 pytest
 ```
 
-The 40 tests cover:
+The 43 tests cover:
 - the analysis and pricing modules;
 - the API through FastAPI's `TestClient`, using the sample cube, open box and oversized bar in `samples/`;
-- the Lambda handler, using fake API Gateway events.
+- the Lambda handler, using fake API Gateway events;
+- CORS: which origins get the `Access-Control-Allow-Origin` header.
 
 No AWS account is needed.
 
@@ -68,6 +70,18 @@ sam deploy            # first time: sam deploy --guided
 ```
 
 The API URL is printed as the `ApiUrl` stack output. To remove everything, run `sam delete`.
+
+### Allowed origins (CORS)
+
+Browsers only let a web page read the API's responses if the page's origin is on the API's allow list. `http://localhost:5173`, the console's Vite dev server, is always allowed. Add more origins with the `ALLOWED_ORIGINS` environment variable, as a comma-separated list such as `https://console.example.com,https://staging.example.com`. Spaces and trailing slashes are ignored, and `*` is rejected, so the API never allows every site.
+
+On Lambda, `ALLOWED_ORIGINS` is set from the `AllowedOrigins` stack parameter. It defaults to empty, meaning only localhost is allowed. To set it on deploy:
+
+```bash
+sam deploy --parameter-overrides 'AllowedOrigins="https://console.example.com,https://staging.example.com"'
+```
+
+Keep the inner double quotes when the value has commas. To avoid typing it every time, save it in `samconfig.toml` under `[default.deploy.parameters]` as `parameter_overrides = 'AllowedOrigins="https://console.example.com"'`. `sam deploy --guided` will also offer to save it there. Locally, run `ALLOWED_ORIGINS=https://console.example.com uvicorn app.main:app --reload`. The value is read once, at startup.
 
 **Upload limit:** Lambda caps request payloads at 6 MB, and API Gateway sends the file base64-encoded. In practice that means STL files of about 4.5 MB or less when deployed. Locally the limit is 50 MB.
 
