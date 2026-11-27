@@ -13,8 +13,8 @@ confirm_changeset = true  # show what will change in AWS and ask before applying
 s3_prefix = "part-analyzer-api"
 region = "us-east-2"
 image_repositories = []
+parameter_overrides = "AllowedOrigins=\"https://test-gen-agent-one.vercel.app\""
 
 [default.global.parameters]
 region = "us-east-2"
 
-parameter_overrides = "AllowedOrigins=\"https://test-gen-agent-one.vercel.app\""
